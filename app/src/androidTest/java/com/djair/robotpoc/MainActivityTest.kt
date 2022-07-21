@@ -8,7 +8,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import com.djair.robotpoc.rules.KoinRule
+import com.djair.robotpoc.rules.ActivityRule
 import com.djair.robotpoc.ui.home.HomeViewModel
 import org.hamcrest.core.AllOf
 import org.junit.Rule
@@ -19,7 +19,7 @@ import org.koin.dsl.module
 class MainActivityTest {
 
     @get:Rule
-    val koinRule = KoinRule(MainActivity::class.java)
+    val activityRule = ActivityRule(MainActivity::class.java)
 
     private val viewModel = HomeViewModel()
 
@@ -58,7 +58,7 @@ class MainActivityTest {
     @Test
     fun isViewVisible_Should_get_success_When_Activity_is_visible() {
         val presentationModule = module { viewModel { viewModel } }
-        koinRule.setModules {
+        activityRule.setModules {
             presentationModule
         }.putArguments {
             putString("KEY", "Hello World")

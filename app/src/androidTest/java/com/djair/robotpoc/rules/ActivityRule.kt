@@ -20,7 +20,7 @@ import org.koin.test.KoinTest
 import java.lang.reflect.Modifier
 
 @VisibleForTesting(otherwise = Modifier.PRIVATE)
-class KoinRule<T : Activity>(
+class ActivityRule<T : Activity>(
     private val activityClass: Class<T>
 ) : TestRule, KoinTest {
 
