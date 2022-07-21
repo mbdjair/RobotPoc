@@ -47,6 +47,10 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
     implementation 'io.insert-koin:koin-test:2.2.3'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1'
+    implementation 'io.insert-koin:koin-core:2.2.3'
+    implementation 'io.insert-koin:koin-android:2.2.3'
+    implementation 'io.insert-koin:koin-androidx-scope:2.2.3'
+    implementation 'io.insert-koin:koin-androidx-viewmodel:2.2.3'
 
     // Tests
     testImplementation 'junit:junit:4.13.2'
