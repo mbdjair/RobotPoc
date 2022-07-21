@@ -57,12 +57,12 @@ class MainActivityTest {
 
     @Test
     fun isViewVisible_Should_get_success_When_Activity_is_visible() {
-        val uiModule = module { viewModel { viewModel } }
-        koinRule.apply {
-            setupModule(uiModule)
-            putBundles { putString("KEY", "Hello World") }
-            launchActivity()
-        }
+        val presentationModule = module { viewModel { viewModel } }
+        koinRule.setModules {
+            presentationModule
+        }.putArguments {
+            putString("KEY", "Hello World")
+        }.launchActivity()
 
         onView(withId(R.id.nav_host_fragment_activity_main))
             .check(matches(isDisplayed()))

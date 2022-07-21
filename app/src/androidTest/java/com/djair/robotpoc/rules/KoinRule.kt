@@ -3,6 +3,7 @@ package com.djair.robotpoc.rules
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.annotation.VisibleForTesting
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import org.junit.rules.ExternalResource
@@ -16,42 +17,35 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.module.Module
 import org.koin.test.KoinTest
+import java.lang.reflect.Modifier
 
+@VisibleForTesting(otherwise = Modifier.PRIVATE)
 class KoinRule<T : Activity>(
     private val activityClass: Class<T>
 ) : TestRule, KoinTest {
 
     private val ruleChain = RuleChain.emptyRuleChain()
 
-    private var setupBeforeActivityOpen: () -> Unit = {}
-    private var setupBundleActivity: Bundle = Bundle()
+    private var setupPutArgumentsActivity: Bundle = Bundle()
     private var activityScenario: ActivityScenario<T>? = null
 
     override fun apply(base: Statement?, description: Description?): Statement =
         ruleChain.around(StartKoinRule())
             .apply(base, description)
 
-    fun setupModule(vararg module: Module) {
-        val modules = mutableListOf<Module>()
-        for (item in module) {
-            modules.add(item)
-        }
+    fun setModules(blockModule: () -> Module) =
+        apply { loadKoinModules(blockModule()) }
 
-        loadKoinModules(modules)
-    }
+    fun putArguments(blockBundle: Bundle.() -> Unit) =
+        apply { blockBundle(setupPutArgumentsActivity) }
 
-    fun beforeActivityLaunch(block: () -> Unit) = apply {
-        setupBeforeActivityOpen = block
-    }
-
-    fun putBundles(block: Bundle.() -> Unit) = apply {
-        block(setupBundleActivity)
-    }
-
-    fun launchActivity() {
+    fun launchActivity(blockActivity: T.() -> Unit = {}) {
         Intent(ApplicationProvider.getApplicationContext(), activityClass)
-            .putExtras(setupBundleActivity)
-            .also { activityScenario = ActivityScenario.launch(it) }
+            .putExtras(setupPutArgumentsActivity)
+            .also {
+                activityScenario = ActivityScenario.launch(it)
+                activityScenario?.onActivity { activity -> blockActivity(activity) }
+            }
     }
 
     private inner class StartKoinRule : ExternalResource() {
