@@ -7,13 +7,13 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 
-class Application : Application() {
+class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
         startKoin {
             androidLogger()
-            androidContext(this@Application)
+            androidContext(this@MyApplication)
             modules(applicationModules)
         }
     }
